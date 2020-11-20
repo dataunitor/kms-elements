@@ -172,8 +172,8 @@ kms_composite_mixer_recalculate_sizes (gpointer data)
   counter = 0;
   values = g_list_sort (values, compare_port_data);
 
-  n_columns = (gint) ceil (sqrt (self->priv->n_elems));
-  n_rows = (gint) ceil ((float) self->priv->n_elems / (float) n_columns);
+  n_rows = (gint) ceil (sqrt (self->priv->n_elems));
+  n_columns = (gint) ceil ((float) self->priv->n_elems / (float) n_rows);
 
   GST_DEBUG_OBJECT (self, "columns %d rows %d", n_columns, n_rows);
 
@@ -194,8 +194,8 @@ kms_composite_mixer_recalculate_sizes (gpointer data)
     g_object_set (port_data->capsfilter, "caps", filtercaps, NULL);
     gst_caps_unref (filtercaps);
 
-    top = ((counter / n_columns) * height);
-    left = ((counter % n_columns) * width);
+    top = ((counter % n_rows) * height);
+    left = ((counter / n_rows) * width);
 
     g_object_set (port_data->video_mixer_pad, "xpos", left, "ypos", top,
         "alpha", 1.0, NULL);
@@ -834,8 +834,8 @@ kms_composite_mixer_init (KmsCompositeMixer * self)
   self->priv->ports = g_hash_table_new_full (g_int_hash, g_int_equal,
       release_gint, kms_composite_mixer_port_data_destroy);
   //TODO:Obtain the dimensions of the bigger input stream
-  self->priv->output_height = 600;
-  self->priv->output_width = 800;
+  self->priv->output_height = 800;
+  self->priv->output_width = 600;
   self->priv->n_elems = 0;
 
   self->priv->loop = kms_loop_new ();
